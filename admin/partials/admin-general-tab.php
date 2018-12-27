@@ -54,12 +54,12 @@ if ( ! empty( $success_msg ) ) { ?>
 					<input type="checkbox" id="email_notif_on_publish" name="email_notif_on_publish" value="1" <?php echo ( $email_notif_settings->on_publish ) ? 'checked': ''; ?> /> On publish post notify author's followers.
 				</td>
 			</tr>
-			<tr>
+			<!-- <tr>
 				<th><label for="email_notif_on_comment" >Enable</label></th>
 				<td>
 			    <input type="checkbox" id="email_notif_on_comment" name="email_notif_on_comment" value="1" <?php echo ( $email_notif_settings->on_comment ) ? 'checked': ''; ?> /> On comment notify author's followers.
 			  </td>
-			</tr>
+			</tr> -->
 			<tr>
 				<th><label for="email_notif_on_follow" >Enable</label></th>
 				<td>
@@ -100,7 +100,7 @@ if ( ! empty( $success_msg ) ) { ?>
 			<tr>
 				<th><label for="email_template_from_email" >From Email:</label></th>
 				<td>
-			    <input type="text" id="email_template_from_email" name="email_template_from_email" value="<?php echo $email_template_settings->from_email; ?>" />     
+			    <input type="email" id="email_template_from_email" name="email_template_from_email" value="<?php echo $email_template_settings->from_email; ?>" />     
 			  </td>
 			</tr>
 			<tr>

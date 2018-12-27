@@ -53,7 +53,7 @@ add_action('wp_ajax_unfollow', 'fdfp_process_unfollow');
 
 
 /**
- * Email notification to user's followers on publish post
+ * On publish post email notification to author's (user's) followers.
  *
  * @access      private
  * @since       1.0
@@ -61,9 +61,11 @@ add_action('wp_ajax_unfollow', 'fdfp_process_unfollow');
  */
 
 function fdfp_post_published_notification( $post_id, $post ) {
-	
-	// Site Url 
-	$site_url = get_site_url();
+								
+	$email_notif_settings = json_decode( get_option( 'email_notif_settings' ) );
+	if ( ! $email_notif_settings->on_publish ) {
+		return false;
+	}
 
 	/* Post author ID. */
 	$author = $post->post_author; 
@@ -77,60 +79,22 @@ function fdfp_post_published_notification( $post_id, $post ) {
 	/* Post Title. */
 	$title = $post->post_title;
 
-	// To Get Company Logo
-	$email_template_settings = json_decode( get_option( 'email_template_settings' ) );
+	// Mail Information
+	$subject = sprintf( 'New Post: %s', $title );	
 
-	// Logo
-	if ( ! empty($email_template_settings->logo) ) {
-		$logo = '<img src="' . $email_template_settings->logo . '" height="100px" />';
-	} else {
-		$logo = get_bloginfo( 'name' );
-	}
-
-	// Set the value of FROM in header from admin panel
-	$from_name = "";
-	// set name 
-	if(!empty($email_template_settings->from_name)){
-		$from_name .= $email_template_settings->from_name;
-	}
-
-	// set email
-	if(!empty($email_template_settings->from_email)){
-		$from_name .= " <".$email_template_settings->from_email.">";
-	}
-
-	// If both the value of admin panel is empty
-	if(empty($from_name)){
-		$from_name = get_bloginfo('name') . ' <' . get_bloginfo('admin_email') . '>';
-	}
+	// Message To print In Template
+	$message = "Author $name has been published a new $post->post_type titled $title.";
 	
 	// Post Link
-	$permalink = get_permalink( $post_id );
+	$permalink = get_permalink( $post_id );				
 
-	// Mail Information
-	$subject = sprintf( 'New Post: %s', $title );					
-
-	foreach($followers_list as $follower){
+	foreach( $followers_list as $follower ) {
 		// Get Information of follower
-		$to_user = get_userdata($follower);
-		$user_name = $to_user->first_name.' '.$to_user->last_name;
-
-		// Get The Template 
-		$body = file_get_contents(plugin_dir_path( __FILE__ ) . '../emails/notification-template.html',true);
-
-		// Message To print In Template
-		$message = "Author: " . $name . "! New " . $post->post_type . " has been published.";
+		$to_user_info = get_userdata($follower);
 		
-		// Body And Header Of mail
-		$body = str_replace('[NameGoesHere]', $user_name, $body);
-		$body = str_replace('[MessageGoesHere]', $message, $body);
-		$body = str_replace('[WebSiteUrl]', $site_url, $body);
-		$body = str_replace('[CompanyLogoHere]', $logo, $body);
-		$body = str_replace('[LinkGoesHere]', $permalink, $body);
-		$headers = array('Content-Type: text/html; charset=UTF-8','From: '.$from_name);	
-		
-		$to = $to_user->user_email;
-		wp_mail( $to, $subject, $body, $headers );	
+		// Mail Function
+		fdfp_send_notif_email( $to_user_info->user_email, $to_user_info->display_name, $subject, $message, $permalink );
+
 	}
 }
 add_action( 'publish_post', 'fdfp_post_published_notification', 10, 2 );
@@ -138,19 +102,26 @@ add_action( 'publish_post', 'fdfp_post_published_notification', 10, 2 );
 
 
 /**
+// TODO: This func is wrong!
+// TODO: This is being sent to the author, it needs to be sent to the author's followers
+
  * Email notification to author on post comment approved
  *
  * @access      private
  * @since       1.0
  * @return      void
- */
 // Change Email Text using filter
 function fdfp_change_comment_email( $body, $comment_id ) {	
 		// Site Url 	
 		$site_url = get_site_url();	
 
 		// Get the Post
-		$post = get_post($comment_id);
+		// TODO: Fix this is wrong, was using comment_id to get_post, doesnt work like that:
+		// previous code was get_post( $comment_id );
+		// which is wrong so my change could have more implications, need to test
+		$this_comment = get_comment( $comment_id ); // https://codex.wordpress.org/Function_Reference/get_comment
+		// $this_comment->comment_post_ID
+		$post = get_post($this_comment->comment_post_ID);
 
 		// To Get Company Logo
 		$email_template_settings = json_decode( get_option( 'email_template_settings' ) );
@@ -166,7 +137,7 @@ function fdfp_change_comment_email( $body, $comment_id ) {
 		$body = file_get_contents(plugin_dir_path( __FILE__ ) . '../emails/notification-template.html',true);
 
 		// Message To print In Template
-		$message = "Your Friend " . get_comment_author($comment_id) . " ! has Commented on a " . $post->post_type;
+		$message = "Your friend " . get_comment_author($comment_id) . " commented on a " . $post->post_type . " titled " . $post->post_title . ".";
 
 		// Post Link
 		$permalink = get_comment_link( $comment_id );
@@ -177,6 +148,9 @@ function fdfp_change_comment_email( $body, $comment_id ) {
 		$body = str_replace('[WebSiteUrl]', $site_url, $body);
 		$body = str_replace('[CompanyLogoHere]', $logo, $body);
 		$body = str_replace('[LinkGoesHere]', $permalink, $body);
+
+		// TODO: Loop over author comment followers
+		// use fdfp_send_notif_email( $to_user_info->user_email, $to_user_info->display_name, $subject, $message, $view_more_link ); // from follow-helpers.php
 		
 		return $body;
 }
@@ -214,5 +188,6 @@ function fdfp_filter_comment_notification_headers( $message_headers, $comment_co
 // add the filter comment_notification_headers
 add_filter( 'comment_notification_headers', 'fdfp_filter_comment_notification_headers', 10, 2 ); 
 
+ */
 
 

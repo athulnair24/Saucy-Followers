@@ -60,11 +60,11 @@ function fdfp_send_notif_email( $to, $to_name, $subject, $message, $view_more_li
   $email_template_settings = json_decode( get_option( 'email_template_settings' ) );
   // Logo
   $logo = ( ! empty($email_template_settings->logo) ) ? "<img src=" . $email_template_settings->logo . " height='100px'>" : get_blofindo("name");
-// Primary Color
+  // Primary Color
   $primary_color = ( ! empty($email_template_settings->primary_color) ) ? $email_template_settings->primary_color : '#000000';
 
   // Get The Template 
-  $body = file_get_contents( plugin_dir_path( __FILE__ ) . '../emails/notification-template.html', true );
+  $body = file_get_contents( plugin_dir_path( __FILE__ ) . '../../includes/emails/notification-template.html', true );
   
   // Body And Header Of mail
   $body = str_replace('[NameGoesHere]', $to_name, $body);
@@ -75,24 +75,18 @@ function fdfp_send_notif_email( $to, $to_name, $subject, $message, $view_more_li
   $body = str_replace('[PrimaryColor]', $primary_color, $body);
 
   // Set the value of FROM in header from admin panel
-  $from_name = "";
-  // set name 
-  if( ! empty($email_template_settings->from_name)){
-    $from_name .= $email_template_settings->from_name;
+  $from_name = get_bloginfo("name");
+  if( ! empty($email_template_settings->from_name) && $email_template_settings->from_name !== "" ){
+    $from_name = $email_template_settings->from_name;
   }
 
   // set email
-  if( ! empty($email_template_settings->from_email)) {
-    $from_name .= " <".$email_template_settings->from_email.">";
+  $from_email = get_bloginfo("admin_email");
+  if( ! empty($email_template_settings->from_email) && $email_template_settings->from_email !== "" ) {
+    $from_email = $email_template_settings->from_email;
   }
-
-  // If both the value of admin panel is empty
-  if( empty( $from_name ) ){
-    $from_name = get_bloginfo("name") . " " . get_bloginfo("admin_email");
-  }
-
-  $headers = array('Content-Type: text/html; charset=UTF-8');
-  $headers[] = "From: $from_name";
+  
+  $headers = "From: $from_name <$from_email>" . "\r\n";
 
   // Mail Function
   $sent = wp_mail( $to, $subject, $body, $headers );

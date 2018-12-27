@@ -15,12 +15,12 @@ Saucy followers is a WordPress Plugin that enables you to create an follow/unfol
 == Installation ==
 
 How to install the plugin and get it working.
+https://www.siteground.com/tutorials/wordpress/install-plugins/
 
-e.g.
+== Setup ==
 
-1. Upload `saucy-followers.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
+Navigate to WP Admin > Settings > Saucy Followers
+/wp-admin/options-general.php?page=saucy-followers
 
 == Frequently Asked Questions ==
 
@@ -32,6 +32,10 @@ Answer.
 
 
 == Changelog ==
+
+= 0.1.2 = Refactored Email Notifications and Email Templates
+
+= 0.1.1 = Email notifications added
 
 = 0.1.0 =
 

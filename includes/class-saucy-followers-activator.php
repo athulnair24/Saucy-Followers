@@ -21,10 +21,7 @@
  * @author     MyDigitalSauce <justin@mydigitalsauce.com>
  */
 class Saucy_Followers_Activator {
-
-	/**
-=	 * @since    0.1.0
-	 */
+	
 	public static function activate() {
 
 		// On Activate
