@@ -97,12 +97,13 @@ function fdfp_follow_user( $user_id = 0, $user_to_follow = 0 ) {
 
 		do_action( 'fdfp_post_follow_user', $user_id, $user_to_follow );
 
-		$check_mail = fdfp_notif_user_on_follow($user_to_follow, $user_id);
+		$email_notif_settings = json_decode( get_option( 'email_notif_settings' ) );
+		if ( $email_notif_settings->on_follow ) {
+			fdfp_notif_user_on_follow($user_to_follow, $user_id);			
+		}
 
-		// if( $check_mail )
-		// 	return true;
-		// else
-		// 	return false;
+		return true;
+
 	}
 	return false;
 }
@@ -118,18 +119,26 @@ function fdfp_follow_user( $user_id = 0, $user_to_follow = 0 ) {
  * @param 		int $user_id        - the ID of the user that is doing the following
  * @return      bool
  */
-function fdfp_notif_user_on_follow($user_to_follow , $user_id){
+function fdfp_notif_user_on_follow( $user_to_follow, $user_id ) {
 	
-	$to_user_info = get_userdata($user_to_follow);
+	// To User 
+	$to_user_info = get_userdata($user_to_unfollow);
+
+	// Mail Information
+	$subject = "New Follower";
+
+	// Current User 
 	$user_info = get_userdata($user_id);
-	
-	$to = $to_user_info->user_email;	
-	$subject = 'New Follower';
-	$body = 'Username : '.$user_info->user_login.' is following you. Thank You.';
-	$headers = array('Content-Type: text/html; charset=UTF-8');
-		
-	wp_mail( $to, $subject, $body, $headers );
-	
+
+	// Message To print In Template
+	$message = "Username : " . $user_info->user_login . " is following you.";
+
+	// View More Link
+	$view_more_link = fdfp_get_notif_view_more_link($user_id);
+			
+	// Mail Function
+	fdfp_send_notif_email( $to_user_info->user_email, $to_user_info->display_name, $subject, $message, $view_more_link );
+
 	return true;
 }
 
@@ -193,10 +202,53 @@ function fdfp_unfollow_user( $user_id = 0, $unfollow_user = 0 ) {
 
 	if ( $modified ) {
 		do_action( 'fdfp_post_unfollow_user', $user_id, $unfollow_user );
+		
+		$email_notif_settings = json_decode( get_option( 'email_notif_settings' ) );
+		if ( $email_notif_settings->on_unfollow ) {
+	     // Mail To User Notification of unfollow
+			fdfp_notif_user_on_unfollow($unfollow_user, $user_id);
+		}
+
 		return true;
+
 	}
 
 	return false;
+}
+
+
+/**
+ * Mail a user
+ *
+ * Email notification on User To unfollow
+ *
+ * @access      private
+ * @since       1.0
+ * @param 		int $user_to_unfollow - the ID of the user that is being unfollowed
+ * @param 		int $user_id        - the ID of the user that is doing the unfollowing
+ * @return      bool
+ */
+function fdfp_notif_user_on_unfollow( $user_to_unfollow, $user_id ) {
+
+	// To User 
+	$to_user_info = get_userdata($user_to_unfollow);
+	
+	// Mail Information
+	$subject = "User Unfollow";
+
+	// Current User 
+	$user_info = get_userdata($user_id);
+
+	// Message To print In Template
+	$message = "Username : " . $user_info->display_name . " just unfollowed you.";
+
+	// View More Link
+	$view_more_link = fdfp_get_notif_view_more_link($user_id);
+			
+	// Mail Function
+	fdfp_send_notif_email( $to_user_info->user_email, $to_user_info->display_name, $subject, $message, $view_more_link );
+	
+	return true;
 }
 
 /**

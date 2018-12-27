@@ -37,8 +37,14 @@ class Saucy_Followers_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
+		$this->admin_helpers();
+		add_action( 'admin_enqueue_scripts', array($this, 'enqueue_scripts') );
 		add_action( 'admin_menu', array($this, 'create_admin_menu') );
 
+	}
+
+	public function admin_helpers() {
+		require plugin_dir_path( __FILE__ ) . 'partials/admin-helpers.php';
 	}
 
 	/**
@@ -59,7 +65,9 @@ class Saucy_Followers_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		// wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery' ), $this->version, false );
+		// wp_enqueue_media();
+		// wp_enqueue_style( 'wp-color-picker');
+		// wp_enqueue_script( 'wp-color-picker');
 
 	}
 
@@ -75,8 +83,7 @@ class Saucy_Followers_Admin {
 	}
 
 	public function create_admin_page() {
-		// partials/saucy-followers-admin-display.php
-		require plugin_dir_path( __FILE__ ) . 'partials/saucy-followers-admin-display.php';
+		require plugin_dir_path( __FILE__ ) . 'partials/admin-settings-page.php';
 	}
 
 }

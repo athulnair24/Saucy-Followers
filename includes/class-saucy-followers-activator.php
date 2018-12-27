@@ -23,13 +23,19 @@
 class Saucy_Followers_Activator {
 
 	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    0.1.0
+=	 * @since    0.1.0
 	 */
 	public static function activate() {
+
+		// On Activate
+		// Update options table with settings
+	  $email_notif_settings = array(
+	    'on_publish' => "1",
+	    'on_comment' => "1",
+	    'on_follow' => "1",
+	    'on_unfollow' => "1",
+	  );
+	  update_option( 'email_notif_settings', json_encode( $email_notif_settings ) );
 
 	}
 
