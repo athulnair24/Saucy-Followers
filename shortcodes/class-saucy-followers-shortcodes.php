@@ -82,7 +82,7 @@ class Saucy_Followers_Shortcodes {
 		$author_id = $author->ID;
 
 		$following_ids = fdfp_get_following( $author_id );
-		$following_listing_str = '<ul class="fdfp-author-list fdfp-author-following-list">';
+		$following_listing_str = '<ul class="fdfp__list-group fdfp__following-list-group">';
 
 		if ( ! empty( $following_ids ) ) {
 			foreach ($following_ids as $following_id) {
@@ -92,10 +92,17 @@ class Saucy_Followers_Shortcodes {
 				$following_name = get_the_author_meta( 'display_name', $following_id );
 				$following_description = get_the_author_meta( 'description', $following_id );
 
-				$following_listing_str .= '<li class="col-xs-12"><div class="fdfp-author-list-inner-row row">';
-				$following_listing_str .= '<div class="col-xs-3 padding-left-0"><img src="' . $following_avatar_url . '" class="avatar-img"></div>';
-				$following_listing_str .= '<div class="col-xs-9 padding-left-0"><a href="' . $following_url . '" class="h3 author-title">' . $following_name . '</a><p>' . $following_description . '</p></div>';
-				$following_listing_str .= '</div></li>';
+				$following_listing_str .= '<li class="fdfp__list-group__item" >';
+					$following_listing_str .= '<div class="list-group__item__row">';
+						$following_listing_str .= '<div class="list-group__item__col-auto">';
+							$following_listing_str .= '<img src="' . $following_avatar_url . '" class="list-group__item__avatar" alt="' . $following_name . '" >';
+						$following_listing_str .= '</div>';
+						$following_listing_str .= '<div class="list-group__item__col">';
+							$following_listing_str .= '<a href="' . $following_url . '" class="list-group__item__title" title="' . $following_name . '" >' . $following_name . '</a>';
+							$following_listing_str .= '<p>' . $following_description . '</p>';
+						$following_listing_str .= '</div>';
+					$following_listing_str .= '</div>';
+				$following_listing_str .= '</li>';
 			}
 		}
 
@@ -112,7 +119,7 @@ class Saucy_Followers_Shortcodes {
 		$author_id = $author->ID;
 
 		$followers_ids = fdfp_get_followers( $author_id );
-		$followers_listing_str = '<ul class="fdfp-author-list fdfp-author-following-list">';
+		$followers_listing_str = '<ul class="fdfp__list-group fdfp__followers-list-group">';
 
 		if ( ! empty( $followers_ids ) ) {
 			foreach ($followers_ids as $follower_id) {
@@ -122,10 +129,18 @@ class Saucy_Followers_Shortcodes {
 				$follower_name = get_the_author_meta( 'display_name', $follower_id );
 				$follower_description = get_the_author_meta( 'description', $follower_id );
 
-				$followers_listing_str .= '<li class="col-xs-12"><div class="fdfp-author-list-inner-row row">';
-				$followers_listing_str .= '<div class="col-xs-3 padding-left-0"><img src="' . $follower_avatar_url . '" class="avatar-img"></div>';
-				$followers_listing_str .= '<div class="col-xs-9 padding-left-0"><a href="' . $follower_url . '" class="h3 author-title">' . $follower_name . '</a><p>' . $follower_description . '</p></div>';
-				$followers_listing_str .= '</div></li>';
+				$followers_listing_str .= '<li class="fdfp__list-group__item" >';
+					$followers_listing_str .= '<div class="list-group__item__row">';
+						$followers_listing_str .= '<div class="list-group__item__col-auto">';
+							$followers_listing_str .= '<img src="' . $follower_avatar_url . '" class="list-group__item__avatar" alt="' . $follower_name . '" >';
+						$followers_listing_str .= '</div>';
+						$followers_listing_str .= '<div class="list-group__item__col">';
+							$followers_listing_str .= '<a href="' . $follower_url . '" class="list-group__item__title" title="' . $follower_name . '" >' . $follower_name . '</a>';
+							$followers_listing_str .= '<p>' . $follower_description . '</p>';
+						$followers_listing_str .= '</div>';
+					$followers_listing_str .= '</div>';
+				$followers_listing_str .= '</li>';
+				
 			}
 		}
 		$followers_listing_str .= "</ul>";
