@@ -67,6 +67,8 @@ require plugin_dir_path( __FILE__ ) . '/includes/actions/actions.php';
 require plugin_dir_path( __FILE__ ) . '/includes/display-helpers/display-helpers.php' ;
 require plugin_dir_path( __FILE__ ) . '/includes/follow-helpers/follow-helpers.php';
 
+require plugin_dir_path( __FILE__ ) . '/includes/admin/admin.php';
+
 /**
  * Begins execution of the plugin.
  *
