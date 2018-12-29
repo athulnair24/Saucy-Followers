@@ -86,7 +86,7 @@ function fdfp_send_notif_email( $to, $to_name, $subject, $message, $view_more_li
     $from_email = $email_template_settings->from_email;
   }
   
-  $headers = "From: $from_name <$from_email>" . "\r\n";
+  $headers = array( 'Content-Type: text/html; charset=UTF-8', "From: $from_name <$from_email>" . "\r\n" );
 
   // Mail Function
   $sent = wp_mail( $to, $subject, $body, $headers );

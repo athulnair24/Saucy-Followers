@@ -33,10 +33,12 @@ Answer.
 
 == Changelog ==
 
-= 0.1.2 = Refactored Email Notifications and Email Templates
+= 0.1.3 = Followers and Following listing css no longer utilizies bootstrap classes, layout is now native. WP Admin Users now have Followers, and Following columns.
 
-= 0.1.1 = Email notifications added
+= 0.1.2 = Refactored Email Notifications and Email Templates.
 
-= 0.1.0 =
+= 0.1.1 = Admin settings page created. Email notifications added. 9/29/18
+
+= 0.1.0 = Init. 8/2/18
 
 Here's a link to [WordPress](http://wordpress.org/ "Your favorite software").

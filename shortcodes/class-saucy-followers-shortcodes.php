@@ -35,7 +35,7 @@ class Saucy_Followers_Shortcodes {
 		add_shortcode( 'saucy_followers_count', array($this, 'saucy_followers_count_shortcode') );
 		add_shortcode( 'saucy_following_listing', array($this, 'saucy_following_listing_shortcode') );
 		add_shortcode( 'saucy_followers_listing', array($this, 'saucy_followers_listing_shortcode') );
-		add_shortcode( 'saucy_following_posts', array($this, 'saucy_following_posts_shortcode') );
+		add_shortcode( 'saucy_activity_feed', array($this, 'saucy_activity_feed_shortcode') );
 
 	}
 
@@ -82,7 +82,7 @@ class Saucy_Followers_Shortcodes {
 		$author_id = $author->ID;
 
 		$following_ids = fdfp_get_following( $author_id );
-		$following_listing_str = '<ul class="fdfp__list-group fdfp__following-list-group">';
+		$following_listing_str = '<ul id="fdfp__following-list-group" class="fdfp__list-group">';
 
 		if ( ! empty( $following_ids ) ) {
 			foreach ($following_ids as $following_id) {
@@ -119,7 +119,7 @@ class Saucy_Followers_Shortcodes {
 		$author_id = $author->ID;
 
 		$followers_ids = fdfp_get_followers( $author_id );
-		$followers_listing_str = '<ul class="fdfp__list-group fdfp__followers-list-group">';
+		$followers_listing_str = '<ul id="fdfp__followers-list-group" class="fdfp__list-group">';
 
 		if ( ! empty( $followers_ids ) ) {
 			foreach ($followers_ids as $follower_id) {
@@ -151,7 +151,7 @@ class Saucy_Followers_Shortcodes {
 	/**
 	 * Shows the posts from users that the current user saucy_follows
 	 */
-	public function saucy_following_posts_shortcode( $atts, $content = null ) {
+	public function saucy_activity_feed_shortcode( $atts, $content = null ) {
 	
 		if (is_author(get_current_user_id())) {
 
@@ -168,22 +168,20 @@ class Saucy_Followers_Shortcodes {
 			) );
 
 			ob_start(); ?>
-			<h3><?php _e('Posts by Users you Follow', 'fdfp'); ?></h3>
-			<ul id="fdfp_following_posts">
-				<?php if( $items->have_posts() ) : ?>
+			<h3><?php _e('Activity Feed Of Users You Follow', 'fdfp'); ?></h3>
+
+			<?php if( $items->have_posts() ) : ?>
+				<ul id="fdfp_following-feed" class="fdfp__list-group" >
 					<?php while( $items->have_posts() ) : $items->the_post(); ?>
-						<li class="fdfp_following_post">
-							<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>">
-								<?php the_title(); ?>
-							</a>
-							by <?php the_author_posts_link(); ?>
+						<li class="fdfp__list-group__item">
+							<a href="<?php the_permalink(); ?>" title="<?php the_title_attribute(); ?>"><?php the_title(); ?></a> by <?php the_author_posts_link(); ?>
 						</li>
-					<?php endwhile; ?>
-					<?php wp_reset_postdata(); ?>
+					<?php endwhile;
+					wp_reset_postdata(); ?>
+				</ul>
 				<?php else : ?>
-					<li class="fdfp_following_post fdfp_following_no_results"><?php _e( 'None of the users you follow have posted anything.', 'fdfp' ); ?></li>
+					<p class="fdfp_no-results"><?php _e( 'None of the users you follow have posted anything yet.', 'fdfp' ); ?></p>
 				<?php endif; ?>
-			</ul>
 			<?php
 			return ob_get_clean();
 			
