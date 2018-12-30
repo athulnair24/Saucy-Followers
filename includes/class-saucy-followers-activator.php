@@ -32,7 +32,15 @@ class Saucy_Followers_Activator {
 	    'on_follow' => "1",
 	    'on_unfollow' => "1",
 	  );
-	  update_option( 'email_notif_settings', json_encode( $email_notif_settings ) );
+	  update_option( '_fdfp_email_notif_settings', json_encode( $email_notif_settings ) );
+
+	  $email_template_settings = array(
+	    'from_name' => get_bloginfo('name'),
+	    'from_email' => get_bloginfo('admin_email'),
+	    'logo' => '',
+	    'primary_color' => '',
+	  );
+	  update_option( '_fdfp_email_template_settings', json_encode( $email_template_settings ) );
 
 	}
 

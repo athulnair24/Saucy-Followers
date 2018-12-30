@@ -66,7 +66,7 @@ if ( ! empty( $success_msg ) ) { ?>
 
 					// var_dump($post_types);
 					foreach( $post_types as $post_type ) { ?>
-						<input type="checkbox" name="<?php echo $post_type; ?>" id="<?php echo $post_type; ?>" /><label><?php echo $post_type; ?></label>
+						<input type="checkbox" name="<?php echo $post_type; ?>" id="<?php echo $post_type; ?>" /><label for="<?php echo $post_type; ?>"><?php echo $post_type; ?></label>
 					<?php } ?>
 					<p>Checked post type(s) will appear in the activity feed.</p>
 			  </td>
