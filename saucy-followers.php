@@ -69,6 +69,16 @@ require plugin_dir_path( __FILE__ ) . '/includes/follow-helpers/follow-helpers.p
 
 require plugin_dir_path( __FILE__ ) . '/includes/admin/admin.php';
 
+
+function td_cle_plugin_action_links( $links ) {
+
+	$links[] = '<a href="' . admin_url( 'options-general.php?page=saucy-followers' ) . '">' . __('Settings') . '</a>';
+	$links[] = '<a href="' . admin_url( 'options-general.php?page=saucy-followers&tab=shortcodes' ) . '">' . __('Shortcodes') . '</a>';
+	$links[] = '<a href="' . admin_url( 'options-general.php?page=saucy-followers&tab=help' ) . '">' . __('Help') . '</a>';
+	return $links;
+
+}
+
 /**
  * Begins execution of the plugin.
  *
@@ -82,6 +92,8 @@ function run_saucy_followers() {
 
 	$plugin = new Saucy_Followers();
 	$plugin->run();
+
+	add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'td_cle_plugin_action_links' );
 
 }
 run_saucy_followers();

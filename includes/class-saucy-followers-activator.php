@@ -24,6 +24,10 @@ class Saucy_Followers_Activator {
 	
 	public static function activate() {
 
+		$init = get_option( '_fdfp_init' );
+		if ( $init ) {
+			return;
+		}
 		// On Activate
 		// Update options table with settings
 	  $email_notif_settings = array(
@@ -41,6 +45,8 @@ class Saucy_Followers_Activator {
 	    'primary_color' => '',
 	  );
 	  update_option( '_fdfp_email_template_settings', json_encode( $email_template_settings ) );
+
+	  update_option( '_fdfp_init', true );
 
 	}
 
