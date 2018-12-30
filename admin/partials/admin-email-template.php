@@ -1,6 +1,6 @@
 <?php
 
-$email_template_settings = json_decode( get_option( 'email_template_settings' ) );
+$email_template_settings = json_decode( get_option( '_fdfp_email_template_settings' ) );
 
 $email_template_html = file_get_contents(plugin_dir_path( __FILE__ ) . '../../includes/emails/notification-template.html',true);
 

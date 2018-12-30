@@ -57,7 +57,7 @@ function fdfp_get_notif_view_more_link($user_id) {
 function fdfp_send_notif_email( $to, $to_name, $subject, $message, $view_more_link ) {
 
   // To Get Company Logo
-  $email_template_settings = json_decode( get_option( 'email_template_settings' ) );
+  $email_template_settings = json_decode( get_option( '_fdfp_email_template_settings' ) );
   // Logo
   $logo = ( ! empty($email_template_settings->logo) ) ? "<img src=" . $email_template_settings->logo . " height='100px'>" : get_blofindo("name");
   // Primary Color

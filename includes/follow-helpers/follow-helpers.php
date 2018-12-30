@@ -97,7 +97,7 @@ function fdfp_follow_user( $user_id = 0, $user_to_follow = 0 ) {
 
 		do_action( 'fdfp_post_follow_user', $user_id, $user_to_follow );
 
-		$email_notif_settings = json_decode( get_option( 'email_notif_settings' ) );
+		$email_notif_settings = json_decode( get_option( '_fdfp_email_notif_settings' ) );
 		if ( $email_notif_settings->on_follow ) {
 			fdfp_notif_user_on_follow($user_to_follow, $user_id);			
 		}
@@ -203,7 +203,7 @@ function fdfp_unfollow_user( $user_id = 0, $unfollow_user = 0 ) {
 	if ( $modified ) {
 		do_action( 'fdfp_post_unfollow_user', $user_id, $unfollow_user );
 		
-		$email_notif_settings = json_decode( get_option( 'email_notif_settings' ) );
+		$email_notif_settings = json_decode( get_option( '_fdfp_email_notif_settings' ) );
 		if ( $email_notif_settings->on_unfollow ) {
 	     // Mail To User Notification of unfollow
 			fdfp_notif_user_on_unfollow($unfollow_user, $user_id);

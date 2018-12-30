@@ -14,7 +14,7 @@ if ( isset( $_POST['action'] ) && $_POST['action'] === 'update_email_notif_setti
     'on_follow' => ( isset($_POST['email_notif_on_follow']) ) ? $_POST['email_notif_on_follow'] : null,
     'on_unfollow' => ( isset($_POST['email_notif_on_unfollow']) ) ? $_POST['email_notif_on_unfollow'] : null,
   );
-  update_option( 'email_notif_settings', json_encode( $email_notif_settings ) );
+  update_option( '_fdfp_email_notif_settings', json_encode( $email_notif_settings ) );
   $success_msg = __( 'Email Notification Settings Updated.' );
 }
 
@@ -25,7 +25,7 @@ if ( isset( $_POST['action'] ) && $_POST['action'] === 'update_email_template_se
     'from_email' => $_POST['email_template_from_email'],
     'primary_color' => $_POST['email_template_primary_color'],
   );
-  update_option( 'email_template_settings', json_encode( $email_template_settings ) );
+  update_option( '_fdfp_email_template_settings', json_encode( $email_template_settings ) );
 
   $success_msg = __( 'Email Template Settings Updated.' );
 }
@@ -38,13 +38,54 @@ if ( ! empty( $success_msg ) ) { ?>
 
 
 <h3>General Settings</h3>
-<p>General settings go here</p>
+
+<form method="post" action="<?php echo get_site_url(); ?>/wp-admin/options-general.php?page=saucy-followers&tab=general" >
+	
+  <?php $general_settings = json_decode( get_option( '_fdfp_general_settings' ) ); ?>
+
+	<table class="form-table">
+		<tbody>
+			<tr>
+				<th scope="row">
+					<h3 style="margin: 0;">Activity Feed</h3>
+				</th>
+				<td>
+					<span alt="f223" class="edd-help-tip dashicons dashicons-editor-help" title=""></span>
+				</td>
+			</tr>
+			<tr>
+				<th><label for="email_notif_on_publish" >Enable Post Type(s)</label></th>
+				<td>
+					<?php
+					$args = array(
+						'public' => true,
+						// 'exclude_from_search' => false,
+					 //   '_builtin' => false
+					);
+					$post_types = get_post_types( $args );
+
+					// var_dump($post_types);
+					foreach( $post_types as $post_type ) { ?>
+						<input type="checkbox" name="<?php echo $post_type; ?>" id="<?php echo $post_type; ?>" /><label><?php echo $post_type; ?></label>
+					<?php } ?>
+					<p>Checked post type(s) will appear in the activity feed.</p>
+			  </td>
+			</tr>
+		</tbody>
+	</table>
+
+	<button type="submit" name="action" value="update_general_settings" class="button button-primary" >Save Changes</button>
+	
+</form>
+
+<br/>
+<hr/>
 
 <h3>Email Notification Settings</h3>
 
 <form method="post" action="<?php echo get_site_url(); ?>/wp-admin/options-general.php?page=saucy-followers&tab=general" >
 	
-  <?php $email_notif_settings = json_decode( get_option( 'email_notif_settings' ) ); ?>
+  <?php $email_notif_settings = json_decode( get_option( '_fdfp_email_notif_settings' ) ); ?>
 
 	<table class="form-table">
 		<tbody>
@@ -86,7 +127,7 @@ if ( ! empty( $success_msg ) ) { ?>
 
 <form method="post" action="<?php echo get_site_url(); ?>/wp-admin/options-general.php?page=saucy-followers&tab=general" > 
   <?php
-  $email_template_settings = json_decode( get_option( 'email_template_settings' ) );
+  $email_template_settings = json_decode( get_option( '_fdfp_email_template_settings' ) );
   ?>
 
 	<table class="form-table">

@@ -8,7 +8,7 @@
 		<hr/>
 
 		<h4>Saucy Following Feed - Shortcode</h4>
-		<pre><code>[saucy_following_feed]</code></pre>
+		<pre><code>[saucy_activity_feed]</code></pre>
 		<p>Outputs a feed of the users you follow. Modify this shortcodes output with parameters:</p>
 		<ul>
 			<li>
@@ -40,4 +40,4 @@
 				</ul>
 			</li>
 		</ul>
-		<pre><code>[saucy_following_feed posttype="all" style="grid" showauthor="true"]</code></pre>
+		<pre><code>[saucy_activity_feed posttype="all" style="grid" showauthor="true"]</code></pre>

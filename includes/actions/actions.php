@@ -62,7 +62,7 @@ add_action('wp_ajax_unfollow', 'fdfp_process_unfollow');
 
 function fdfp_post_published_notification( $post_id, $post ) {
 								
-	$email_notif_settings = json_decode( get_option( 'email_notif_settings' ) );
+	$email_notif_settings = json_decode( get_option( '_fdfp_email_notif_settings' ) );
 	if ( ! $email_notif_settings->on_publish ) {
 		return false;
 	}
@@ -124,7 +124,7 @@ function fdfp_change_comment_email( $body, $comment_id ) {
 		$post = get_post($this_comment->comment_post_ID);
 
 		// To Get Company Logo
-		$email_template_settings = json_decode( get_option( 'email_template_settings' ) );
+		$email_template_settings = json_decode( get_option( '_fdfp_email_template_settings' ) );
 
 		// Logo
 		$logo = ( ! empty($email_template_settings->logo) ) ? '<img src="' . $email_template_settings->logo . '" height="100px" />' : get_bloginfo( 'name' );
@@ -162,7 +162,7 @@ add_filter( 'comment_notification_text', 'fdfp_change_comment_email', 20, 2 );
 function fdfp_filter_comment_notification_headers( $message_headers, $comment_comment_id ) { 
 	
  		// To Get Company Logo
-		 $email_template_settings = json_decode( get_option( 'email_template_settings' ) );	
+		 $email_template_settings = json_decode( get_option( '_fdfp_email_template_settings' ) );	
 		 // Set the value of FROM in header from admin panel
 		 $from_name = "";
 		 // set name 
