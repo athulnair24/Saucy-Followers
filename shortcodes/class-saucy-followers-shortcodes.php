@@ -104,6 +104,10 @@ class Saucy_Followers_Shortcodes {
 					$following_listing_str .= '</div>';
 				$following_listing_str .= '</li>';
 			}
+		} else {
+			$following_listing_str .= '<li class="fdfp__list-group__item" >';
+				$following_listing_str .= '<p style="margin-bottom: 0;">You are not following anyone yet.</p>';
+			$following_listing_str .= '</li>';
 		}
 
 		$following_listing_str .= "</ul>";
@@ -142,6 +146,10 @@ class Saucy_Followers_Shortcodes {
 				$followers_listing_str .= '</li>';
 				
 			}
+		} else {
+			$followers_listing_str .= '<li class="fdfp__list-group__item" >';
+				$followers_listing_str .= '<p style="margin-bottom: 0;" >You do not have any followers yet.</p>';
+			$followers_listing_str .= '</li>';
 		}
 		$followers_listing_str .= "</ul>";
 
