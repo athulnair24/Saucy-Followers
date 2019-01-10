@@ -122,7 +122,7 @@ function fdfp_follow_user( $user_id = 0, $user_to_follow = 0 ) {
 function fdfp_notif_user_on_follow( $user_to_follow, $user_id ) {
 	
 	// To User 
-	$to_user_info = get_userdata($user_to_unfollow);
+	$to_user_info = get_userdata($user_to_follow);
 
 	// Mail Information
 	$subject = "New Follower";
@@ -137,6 +137,7 @@ function fdfp_notif_user_on_follow( $user_to_follow, $user_id ) {
 	$view_more_link = fdfp_get_notif_view_more_link($user_id);
 			
 	// Mail Function
+	// var_dump( $to_user_info->user_email, $to_user_info->display_name, $subject, $message, $view_more_link ); // good
 	fdfp_send_notif_email( $to_user_info->user_email, $to_user_info->display_name, $subject, $message, $view_more_link );
 
 	return true;

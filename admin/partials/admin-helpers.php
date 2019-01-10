@@ -58,14 +58,16 @@ function fdfp_send_notif_email( $to, $to_name, $subject, $message, $view_more_li
 
   // To Get Company Logo
   $email_template_settings = json_decode( get_option( '_fdfp_email_template_settings' ) );
+
   // Logo
-  $logo = ( ! empty($email_template_settings->logo) ) ? "<img src=" . $email_template_settings->logo . " height='100px'>" : get_blofindo("name");
+  $logo = ( ! empty($email_template_settings->logo) ) ? "<img src=" . $email_template_settings->logo . " height='100px'>" : get_bloginfo("name");
+
   // Primary Color
   $primary_color = ( ! empty($email_template_settings->primary_color) ) ? $email_template_settings->primary_color : '#000000';
 
   // Get The Template 
   $body = file_get_contents( plugin_dir_path( __FILE__ ) . '../../includes/emails/notification-template.html', true );
-  
+
   // Body And Header Of mail
   $body = str_replace('[NameGoesHere]', $to_name, $body);
   $body = str_replace('[MessageGoesHere]', $message, $body);
