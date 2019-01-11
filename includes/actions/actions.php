@@ -43,6 +43,7 @@ function fdfp_process_unfollow() {
 	die();
 }
 add_action('wp_ajax_unfollow', 'fdfp_process_unfollow');
+
 /**
  * On publish post email notification to author's (user's) followers.
  *
@@ -83,8 +84,6 @@ function fdfp_post_published_notification( $post_id, $post ) {
 	}
 }
 add_action( 'publish_post', 'fdfp_post_published_notification', 10, 2 );
-
-
 /**
  * Email notification to author on post comment approved
  *
@@ -92,92 +91,85 @@ add_action( 'publish_post', 'fdfp_post_published_notification', 10, 2 );
  * @since       1.0
  * @return      void
  */
-// Change Email Text using filter
-function fdfp_change_comment_email( $body, $comment_id ) {	
-		// Site Url 	
-		$site_url = get_site_url();	
-		// Get the comment
-		$this_comment = get_comment( $comment_id );
-		$post = get_post($this_comment->comment_post_ID);
-		// To Get Company Logo
-		$email_template_settings = json_decode( get_option( '_fdfp_email_template_settings' ) );
-		// Logo
-		$logo = ( ! empty($email_template_settings->logo) ) ? '<img src="' . $email_template_settings->logo . '" height="100px" />' : get_bloginfo( 'name' );
-		// Get Information of follower
-		$to_user = get_userdata($post->post_author);
-		$user_name = $to_user->first_name.' '.$to_user->last_name;
-   		// Get The Template 
-		$body = file_get_contents(plugin_dir_path( __FILE__ ) . '../emails/notification-template.html',true);
-		// Message To print In Template
-		$message = "Your friend " . get_comment_author($comment_id) . " commented on a " . $post->post_type . " titled " . $post->post_title . ".";
-		// Post Link
-		$permalink = get_comment_link( $comment_id );
-		
-		// Body And Header Of mail
-		$body = str_replace('[NameGoesHere]', $user_name, $body);
-		$body = str_replace('[MessageGoesHere]', $message, $body);
-		$body = str_replace('[WebSiteUrl]', $site_url, $body);
-		$body = str_replace('[CompanyLogoHere]', $logo, $body);
-		$body = str_replace('[LinkGoesHere]', $permalink, $body);
-		
-		return $body;
-}
-// add the filter Change Email Text 
-add_filter( 'comment_moderation_text', 'fdfp_change_comment_email', 20, 2 );
-add_filter( 'comment_notification_text', 'fdfp_change_comment_email', 20, 2 );
-// define the comment_notification_headers callback 
-function fdfp_filter_comment_notification_headers( $message_headers, $comment_comment_id ) { 
-	
- 		// To Get Company Logo
-		 $email_template_settings = json_decode( get_option( '_fdfp_email_template_settings' ) );	
-		 // Set the value of FROM in header from admin panel
-		 $from_name = "";
-		 // set name 
-		 if(!empty($email_template_settings->from_name)){
-			 $from_name .= $email_template_settings->from_name;
-		 }
- 
-		 // set email
-		 if(!empty($email_template_settings->from_email)){
-			 $from_name .= " <" .$email_template_settings->from_email . ">";
-		 }
- 
-		 // If both the value of admin panel is empty
-		if(empty($from_name)){
-			$from_name = get_bloginfo('name') . ' <' . get_bloginfo('admin_email') . '>';
-		}
- 
-		$message_headers = 'Content-Type: text/html; charset=UTF-8;From: '.$from_name;
-    // make filter magic happen here... 
-    return $message_headers; 
-};     
-//add the filter comment_notification_headers
-add_filter( 'comment_notification_headers', 'fdfp_filter_comment_notification_headers', 10, 2 ); 
-
-
-
-//Adding Recipients
-function fdfp_comment_moderation_recipients( $emails, $comment_id ) {
-
-    $comment = get_comment( $comment_id );
-    $post = get_post( $comment->comment_post_ID );
+//Check Comment Approve 
+add_action('transition_comment_status', 'fdfp_my_approve_comment_callback', 10, 3);
+function fdfp_my_approve_comment_callback($new_status, $old_status, $comment) {
+    if($old_status != $new_status) {
+        if($new_status == 'approved') {
+            
+            // Site Url 	
+    		$site_url = get_site_url();	
+    		
+            //Comment ID
+            $comment_id = $comment->comment_ID;
     
-    /* Post author ID. */
-    $author = $post->post_author; 
-	
-    /* Post author Follower List. */
-    $followers_list = get_user_meta( $author, '_fdfp_followers', true );
+    		// Get the Post
+    		$post = get_post($comment_id);
     
-    foreach($followers_list as $follower){
-
-			// Get Information of follower
-			$to_user = get_userdata($follower);
-			$to = $to_user->user_email;
-    	array_push($emails,$to);	
+    		// To Get Company Logo
+		    $email_template_settings = json_decode( get_option( '_fdfp_email_template_settings' ) );
+    		// Logo
+		    $logo = ( ! empty($email_template_settings->logo) ) ? '<img src="' . $email_template_settings->logo . '" height="100px" />' : get_bloginfo( 'name' );
+      		// Get The Template 
+            $body = file_get_contents(plugin_dir_path( __FILE__ ) . '../emails/notification-template.html',true);
+            // Message To print In Template
+            $message = "Your friend " . get_comment_author($comment_id) . " commented on a " . $post->post_type . " titled " . $post->post_title . ".";
+            // Post Link
+            $permalink = get_comment_link( $comment_id );
+             // Primary Color
+            $primary_color = ( ! empty($email_template_settings->primary_color) ) ? $email_template_settings->primary_color : '#000000';
+    		
+    		
+    		 // Set the value of FROM in header from admin panel
+    		 $from_name = "";
+    		 // set name 
+    		 if(!empty($email_notif_settings->from_name)){
+    			 $from_name .= $email_notif_settings->from_name;
+    		 }
+     
+    		 // set email
+    		 if(!empty($email_notif_settings->from_email)){
+    			 $from_name .= " <".$email_notif_settings->from_email.">";
+    		 }
+     
+    		 // If both the value of admin panel is empty
+    		 if(empty($from_name)){
+    			 $from_name = "My Digital Sauce <example@example.com>";
+    		 }
+     
+    	    $message_headers = 'Content-Type: text/html; charset=UTF-8;From: '.$from_name;
+                
+                
+            // Get Comment Author
+            $author = get_comment($comment->comment_ID);
+            
+            /* Post author Follower List. */
+            $followers_list = get_user_meta( $author->user_id, '_fdfp_followers', true );
+            
+            $subject = "Your friend ".get_comment_author($comment_id)." left comment on ".$post->post_type.".";
+    
+            foreach($followers_list as $follower){
+                // Get Information of follower
+            	$to_user = get_userdata($follower);
+            	
+            	// Get Information 
+    		    $to_name = $to_user->first_name.' '.$to_user->last_name;
+            	
+            	// Body And Header Of mail
+        		$body = str_replace('[NameGoesHere]', $to_name, $body);
+                $body = str_replace('[MessageGoesHere]', $message, $body);
+                $body = str_replace('[WebSiteUrl]', get_site_url(), $body);
+                $body = str_replace('[CompanyLogoHere]', $logo, $body);
+                $body = str_replace('[LinkGoesHere]', $view_more_link, $body);
+                $body = str_replace('[PrimaryColor]', $primary_color, $body);
+            	
+                	
+                // Get user Email
+            	$to = $to_user->user_email;
+            	
+            	wp_mail($to,$subject,$body,$message_headers);
+            }
+            
+        }
     }
-
-
-    return $emails;
 }
-add_filter( 'comment_moderation_recipients', 'fdfp_comment_moderation_recipients', 10, 2 );
-add_filter( 'comment_notification_recipients', 'fdfp_comment_moderation_recipients', 10, 2 );
